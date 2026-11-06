@@ -7,6 +7,17 @@
 
 更多界面截图见 [`docs/screenshots`](./docs/screenshots)。
 
+### 下载
+
+到 **[Releases](https://github.com/Hejunlong27/auditnote/releases)** 下载，两个版本二选一：
+
+| 版本 | 文件 | 说明 |
+| --- | --- | --- |
+| **免安装版** | `AuditNote-0.3.0-portable-win64.zip`（4 MB） | 解压后双击 `AuditNote.exe` 即可，不写注册表；**不含**文件关联与右键新建 |
+| **安装版** | `AuditNote_0.3.0_x64-setup.exe`（211 MB） | 安装后接管 `.md`，带「右键 → 新建 → Markdown 文档」；内置 WebView2 离线安装器，内网可用 |
+
+系统要求：Windows 10 / 11 64 位。
+
 ---
 
 ## 界面一览
