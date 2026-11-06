@@ -30,3 +30,6 @@ perf/
 PRODUCT.md
 ACCEPTANCE.md
 CHANGELOG.md
+
+# 本地打包产物（安装包/免安装压缩包）
+dist-release/

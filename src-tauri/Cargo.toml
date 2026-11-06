@@ -1,6 +1,6 @@
 [package]
 name = "auditnote"
-version = "0.3.0"
+version = "1.0.0"
 description = "AuditNote — 轻量的本地 Markdown 阅读与编辑工具"
 authors = ["Hejunlong27"]
 license = "MIT"

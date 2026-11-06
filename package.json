@@ -1,7 +1,7 @@
 {
   "name": "auditnote",
   "private": true,
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "AuditNote — 轻量的本地 Markdown 阅读与编辑工具",
   "license": "MIT",
   "type": "module",
@@ -19,6 +19,7 @@
     "tauri:build:msi": "tauri build --bundles msi",
     "build:app": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-release.ps1",
     "perf:doc": "node scripts/make-large-doc.mjs",
+    "msix": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make-msix.ps1",
     "icons": "tauri icon assets/icon.png",
     "shell:register": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/register-shell.ps1",
     "shell:unregister": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/register-shell.ps1 -Unregister"

@@ -13,10 +13,19 @@
 
 | 版本 | 文件 | 说明 |
 | --- | --- | --- |
-| **免安装版** | `AuditNote-0.3.0-portable-win64.zip`（4 MB） | 解压后双击 `AuditNote.exe` 即可，不写注册表；**不含**文件关联与右键新建 |
-| **安装版** | `AuditNote_0.3.0_x64-setup.exe`（211 MB） | 安装后接管 `.md`，带「右键 → 新建 → Markdown 文档」；内置 WebView2 离线安装器，内网可用 |
+| **免安装版** | `AuditNote-1.0.0-portable-win64.zip`（4 MB） | 解压后双击 `AuditNote.exe` 即可，不写注册表；**不含**文件关联与右键新建 |
+| **安装版** | `AuditNote_1.0.0_x64-setup.exe`（3.7 MB） | 安装后接管 `.md`，带「右键 → 新建 → Markdown 文档」 |
+| **商店包** | `AuditNote-1.0.0-x64.msix`（4.1 MB） | 提交 Microsoft Store 用；也可是本地装（需先信任自签名证书） |
+
+安装包从 211 MB 瘦到 3.7 MB：不再内嵌 130 MB 的 WebView2 离线安装器，改为安装时按需下载
+（Windows 11 自带 WebView2，绝大多数机器不会触发下载）。内网离线部署可加
+`--config '{"bundle":{"windows":{"webviewInstallMode":{"type":"offlineInstaller"}}}}'` 打回大包。
 
 系统要求：Windows 10 / 11 64 位。
+
+Microsoft Store 版正在按商店标准准备（MSIX 清单、隐私政策、上架文案已就绪）：
+清单与打包含 `src-tauri/msix/`、`scripts/make-msix.ps1`，提交步骤见 [`store/SUBMISSION.md`](./store/SUBMISSION.md)，
+上架文案见 [`store/listing.md`](./store/listing.md)，隐私政策见 [`PRIVACY.md`](./PRIVACY.md)。
 
 ---
 
@@ -82,7 +91,7 @@
 | Node.js | ≥ 18（推荐 20 LTS） | 前端构建 |
 | Rust | stable ≥ 1.77（**msvc** 工具链） | Tauri 后端 |
 | VS Build Tools | 2019/2022，勾选「使用 C++ 的桌面开发」 | 提供 `cl.exe` 与 Windows SDK |
-| WebView2 Runtime | Win10/11 通常自带 | 安装包已内置离线安装器 |
+| WebView2 Runtime | Win10/11 通常自带 | 缺失时安装包会自动下载引导器安装 |
 
 ```powershell
 winget install Rustlang.Rustup
@@ -144,7 +153,7 @@ npm run build:app -- -Bundle msi     # 额外打 MSI 安装包
 
 ```
 src-tauri/target/release/auditnote.exe                                  # 绿色可执行文件，约 7MB
-src-tauri/target/release/bundle/nsis/AuditNote_0.3.0_x64-setup.exe      # 安装包，约 210MB（内置 WebView2 离线安装器）
+src-tauri/target/release/bundle/nsis/AuditNote_1.0.0_x64-setup.exe      # 安装包，约 3.7 MB
 ```
 
 `build:app` 只做两件事：配好 MSVC / Windows SDK 环境变量，然后调用 `tauri build`。
@@ -152,7 +161,7 @@ src-tauri/target/release/bundle/nsis/AuditNote_0.3.0_x64-setup.exe      # 安装
 运行性能无可测差异（交付配置仍在 `Cargo.toml` 的 `[profile.release]` 里）。
 
 - `currentUser` 安装，无需管理员权限；
-- 内置 WebView2 **离线安装器**（内网可用）；要减小体积可改 `webviewInstallMode` 为 `downloadBootstrapper`；
+- WebView2 走 `downloadBootstrapper`（缺什么下什么）；内网离线部署可临时改回 `offlineInstaller`；
 - 安装界面简体中文；**只有 NSIS 安装包会自动写入"右键新建"菜单**（见 1.1）。
 
 ### 2.6 性能自测
@@ -177,10 +186,13 @@ src-tauri\target\release\auditnote.exe perf\压测文档.md
 ├─ vite.config.ts / vitest.config.ts / tsconfig.json / .eslintrc.cjs
 ├─ README.md / LICENSE
 ├─ assets/icon.png                 # 图标源图（1024，纯 Node 生成）
+├─ store/                          # Microsoft Store 上架文案与提交步骤
+├─ PRIVACY.md                      # 隐私政策（商店必填项）
 ├─ scripts/
 │  ├─ make-icon.mjs                # 画图标（超采样 + PNG 编码，无第三方库）
 │  ├─ make-demo.mjs                # 生成浏览器演示页
 │  ├─ ui-check.mjs                 # 注入 IPC mock + 系统 Edge 截图
+│  ├─ make-msix.ps1                # 用 Windows SDK 打 MSIX（商店包）
 │  └─ register-shell.ps1           # 手工注册/注销文件关联与"新建"菜单
 ├─ samples/notes/                  # 可直接打开体验的示例文件夹
 ├─ docs/screenshots/
@@ -310,8 +322,9 @@ src-tauri\target\release\auditnote.exe perf\压测文档.md
 3. **只有 NSIS 安装包写「右键新建」菜单**；MSI / 绿色版需运行一次 `npm run shell:register`。
 4. **PDF 需要自己选一下**：走系统打印对话框里的「另存为 PDF」，不是一键落盘。
 5. **不做 WYSIWYG 与多标签页**：预览区就地编辑回写的仍是 Markdown 源码，一次只编辑一个文档。
-6. **安装包偏大**（内置 WebView2 离线安装器约 +130MB）；内网/离线环境推荐保留，能联网可改
-   `webviewInstallMode` 为 `downloadBootstrapper` 把体积降到 10MB 以内。
+6. **首次运行可能需要 WebView2**：Win11 自带；Win10 上若缺失，安装包会自动联网下载引导器（约 2MB），
+   之后才装运行时。完全离线的内网环境请用 `offlineInstaller` 打一个内嵌运行时的包。
+7. **商店版与安装版不要同时装**：两者都注册 `.md` 关联，后装的会覆盖前者。
 
 ---
 

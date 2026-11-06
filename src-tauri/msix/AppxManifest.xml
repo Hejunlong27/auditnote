@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Microsoft Store（MSIX）清单模板。
+  {{...}} 占位符由 scripts/make-msix.ps1 替换：
+    {{IDENTITY_NAME}}         Partner Center 里「应用标识 → 包/标识名称」，如 12345Hejunlong27.AuditNote
+    {{PUBLISHER}}             Partner Center 里「包/发布者」，形如 CN=1A2B3C4D-...
+    {{PUBLISHER_DISPLAY_NAME}} 发布者显示名
+    {{VERSION}}               四段版本号，如 1.0.0.0
+  本地自测时用占位身份即可，提交商店时必须换成 Partner Center 给的真实值，否则上传会被拒。
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap10 rescap">
+
+  <Identity
+    Name="{{IDENTITY_NAME}}"
+    Publisher="{{PUBLISHER}}"
+    Version="{{VERSION}}"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>AuditNote</DisplayName>
+    <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>轻量的本地 Markdown 阅读与编辑器</Description>
+  </Properties>
+
+  <Dependencies>
+    <!-- Windows 10 1809 起支持 -->
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22631.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="zh-CN" />
+    <Resource Language="en-US" />
+  </Resources>
+
+  <Applications>
+    <!-- Win32 应用打包进 MSIX 必须用 FullTrust 入口；不带虚拟化，文件读写与免安装版一致 -->
+    <Application Id="AuditNote" Executable="AuditNote.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="AuditNote"
+        Description="像记事本一样存在的 Markdown 编辑器"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png" />
+
+
+      <Extensions>
+        <!-- 文件关联交给清单声明，安装后「打开方式」里就有 AuditNote -->
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="auditnote.markdown">
+            <uap:DisplayName>Markdown 文档</uap:DisplayName>
+            <uap:Logo>Assets\Square44x44Logo.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.md</uap:FileType>
+              <uap:FileType>.markdown</uap:FileType>
+              <uap:FileType>.txt</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
