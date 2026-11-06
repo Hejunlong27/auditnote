@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "AuditNote 默认能力：主窗口与打印窗口，文件对话框与系统浏览器/资源管理器调用",
+  "windows": ["main", "print-*"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-title",
+    "dialog:default",
+    "opener:default"
+  ]
+}

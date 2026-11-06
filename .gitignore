@@ -1,0 +1,32 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.DS_Store
+.vscode/
+.idea/
+
+# Rust
+src-tauri/target/
+src-tauri/gen/
+
+# 应用运行数据
+.auditnote/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+.vitest-cache/
+
+# 本地跑探针产生的截图与压测文档（docs/screenshots 里的图是精选后入库的）
+shots/
+perf/
+
+# 工作区记忆与本地会话数据
+.workbuddy/
+
+# 内部开发文档：只留在本地，不进开源仓库
+PRODUCT.md
+ACCEPTANCE.md
+CHANGELOG.md
